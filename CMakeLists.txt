@@ -11,7 +11,7 @@ set(INCLUDE_DIRECTORIES
 
 set(SOURCES
     "${SRC_DIR}/main.cpp"
-    "${SRC_DIR}/Airfoil.cpp"
+    "${SRC_DIR}/airfoil.cpp"
     "${INCLUDE_DIRECTORIES}/glad/glad.c"
 )
 
