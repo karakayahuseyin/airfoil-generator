@@ -4,7 +4,7 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include <iostream>
-#include "generator.h"
+#include "Airfoil.h"
 
 // Shader kodları
 const char* vertexShaderSource = R"(
@@ -23,30 +23,6 @@ void main() {
 }
 )";
 
-int generate_airfoil(int num_points, int digit) {
-    double M, P, T ;
-    M = digit / 1000;
-    P = (digit / 100) % 10;
-    T = digit % 100;
-    Airfoil *airfoil = create_airfoil(num_points, M, P, T);
-
-    if (!airfoil) {
-        printf("Airfoil oluşturulamadı.\n");
-        return 1;
-    }
-
-    airfoil->calculate_coordinates(airfoil);
-
-    printf("x\tXu\tYu\tXl\tYl\n");
-    for (int i = 0; i < airfoil->num_points; i++) {
-        printf("%.4f\t%.4f\t%.4f\t%.4f\t%.4f\n",
-               airfoil->x[i], airfoil->xu[i], airfoil->yu[i], airfoil->xl[i], airfoil->yl[i]);
-    }
-
-    free_airfoil(airfoil);
-    return 0;
-}
-
 // OpenGL sahneyi render etme
 void RenderScene(unsigned int VAO) {
     glBindVertexArray(VAO);
@@ -54,7 +30,7 @@ void RenderScene(unsigned int VAO) {
 }
 
 // UI çizme fonksiyonu
-void RenderUI() {
+void RenderUI(Airfoil* airfoil) {
     // UI pencere boyutu ve konumu
     ImGui::SetNextWindowSize(ImVec2(300, 200));
     ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_Always);
@@ -76,12 +52,22 @@ void RenderUI() {
         std::cout << "4 digit number: " << fourDigitInput << std::endl;
         std::cout << "Points: " << points << std::endl;
         std::cout << "Generating airfoil..." << std::endl;
-        generate_airfoil(points, fourDigitInput);
+
+        // NACA değerlerini çıkar
+        double M = fourDigitInput / 1000;
+        double P = (fourDigitInput / 100) % 10;
+        double T = fourDigitInput % 100;
+
+        // Yeni Airfoil nesnesi oluştur
+        *airfoil = Airfoil(points, M, P, T);
+        airfoil->calculateCoordinates();
+        airfoil->printCoordinates();
     }
 
     // Draw butonu
     if (ImGui::Button("Draw")) {
         std::cout << "Draw button clicked!" << std::endl;
+        // Çizim işlevselliği buraya eklenecek
     }
 
     // UI bitişi
@@ -161,6 +147,9 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+    // Airfoil nesnesi
+    Airfoil airfoil(0, 0, 0, 0); // Boş airfoil başlangıç
+
     // Ana döngü
     glUseProgram(shaderProgram);
     while (!glfwWindowShouldClose(window)) {
@@ -172,7 +161,7 @@ int main() {
         ImGui::NewFrame();
 
         // UI ve sahneyi çiz
-        RenderUI();
+        RenderUI(&airfoil);
         glClearColor(0.7f, 0.85f, 1.0f, 1.0f); // Açık mavi arka plan
         glClear(GL_COLOR_BUFFER_BIT);
         RenderScene(VAO);
