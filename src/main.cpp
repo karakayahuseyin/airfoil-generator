@@ -4,7 +4,8 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include <iostream>
-#include "Airfoil.h"
+
+#include "airfoil.h"
 
 // Shader kodları
 const char* vertexShaderSource = R"(

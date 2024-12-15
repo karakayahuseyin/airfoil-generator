@@ -1,6 +1,7 @@
-#include "Airfoil.h"
 #include <iostream>
 #include <cmath>
+
+#include "airfoil.h"
 
 // Sabit katsayılar
 const double a0 = 0.2969;
