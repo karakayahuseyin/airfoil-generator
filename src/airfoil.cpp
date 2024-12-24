@@ -51,15 +51,16 @@ void Airfoil::calculateCoordinates() {
     }
 }
 
-void Airfoil::printCoordinates() const {
+void Airfoil::saveCoordinates() {
+    AirfoilPoint* airfoilPoint;
     for (int i = 0; i < numPoints; ++i) {
-        std::cout << "Point " << i << ": "
-                  << "X: " << x[i] 
-                  << ", Xu: " << xu[i] 
-                  << ", Yu: " << yu[i] 
-                  << ", Xl: " << xl[i] 
-                  << ", Yl: " << yl[i] 
-                  << std::endl;
+        airfoilPoint = new AirfoilPoint;
+        airfoilPoint->X = x[i];
+        airfoilPoint->Xu = xu[i];
+        airfoilPoint->Yu = yu[i];
+        airfoilPoint->Xl = xl[i];
+        airfoilPoint->Yl = yl[i];
+        airfoilData.push_back(*airfoilPoint);
     }
 }
 

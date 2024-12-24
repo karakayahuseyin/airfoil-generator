@@ -1,8 +1,19 @@
-#ifndef NACA_AIRFOIL_GENERATOR_H
-#define NACA_AIRFOIL_GENERATOR_H
+#pragma once
+
+#ifndef AIRFOIL_GENERATOR_H
+#define AIRFOIL_GENERATOR_H
 
 #include <vector>
 #include <cmath>
+
+struct AirfoilPoint
+{
+    double X;   // Orta nokta X? (isteğe bağlı)
+    double Xu;  // Üst yüz X
+    double Yu;  // Üst yüz Y
+    double Xl;  // Alt yüz X
+    double Yl;  // Alt yüz Y
+};
 
 class Airfoil {
 private:
@@ -13,13 +24,15 @@ private:
     double camberLine(double x) const;
     double camberGradient(double x) const;
     double thicknessDistribution(double x) const;
+    std::vector<AirfoilPoint> airfoilData;
 
 public:
     Airfoil(int numPoints, double M, double P, double T);
     ~Airfoil() = default;
 
     void calculateCoordinates();
-    void printCoordinates() const;
+    void saveCoordinates();
+    std::vector<AirfoilPoint> getAirfoilData() { return airfoilData; }
 
     const std::vector<double>& getX() const { return x; }
     const std::vector<double>& getXu() const { return xu; }
@@ -28,5 +41,5 @@ public:
     const std::vector<double>& getYl() const { return yl; }
 };
 
-#endif // NACA_AIRFOIL_GENERATOR_H
+#endif // AIRFOIL_GENERATOR_H
 
